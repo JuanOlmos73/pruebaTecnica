@@ -1,0 +1,67 @@
+<section class="inventory-container">
+
+  <!-- FILTROS -->
+  <div class="filters">
+     <label>
+      Tipo Movimiento:
+        <select [(ngModel)]="filtroMovimiento">
+          <option value="">Todos</option>
+          <option *ngFor="let tipo of tiposMovimientoDisponibles" [value]="tipo">{{ tipo }}</option>
+        </select>
+    </label>
+
+    <label>
+      Usuario:
+      <select [(ngModel)]="filtroUsuario">
+        <option value="">Todos</option>
+        <option *ngFor="let usuario of usuariosDisponibles" [value]="usuario">{{ usuario }}</option>
+      </select>
+    </label>
+   
+    <label>
+      Fecha:
+      <input type="date" [(ngModel)]="filtroFecha" />
+    </label>
+    <button class="btn" (click)="aplicarFiltros()">Aplicar</button>
+    <button class="btn clear" (click)="limpiarFiltros()">Limpiar</button>
+  </div>
+
+
+  <!-- TABLA -->
+  <div class="table-container">
+    <table class="table" *ngIf="!loading; else loadingTpl">
+      <thead>
+        <tr>
+          <th>Tipo Movimiento</th>
+          <th>Nombre</th>
+          <th>Cantidad</th>
+          <th>Fecha</th>
+          <th>Usuario</th>
+          <th>Detalles</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let historico of historico">
+          <td>{{ historico.tipomovimiento }}</td>
+          <td>{{ historico.nombreproducto }}</td>
+          <td>{{ historico.cantidad }}</td>
+          <td>{{ historico.fecha | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ historico.usuario }}</td>
+          <td>{{ historico.detalle }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Loading template -->
+  <ng-template #loadingTpl>
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando inventario...</p>
+    </div>
+  </ng-template>
+</section>
+  <!-- TOAST -->
+  <div class="toast" *ngIf="showNotification">
+    {{ notificationMessage }}
+  </div>

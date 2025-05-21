@@ -1,0 +1,87 @@
+// Barra superior
+.topbar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  background: linear-gradient(90deg, #4f46e5, #6366f1);
+  color: #fff;
+
+  .logo {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .logout-btn {
+    background: transparent;
+    border: 2px solid #ffffff99;
+    color: #fff;
+    padding: .35rem .9rem;
+    border-radius: .5rem;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    transition: background .2s;
+
+    .icon { font-size: 1.1rem; }
+
+    &:hover {
+      background: #ffffff24;
+    }
+  }
+}
+
+// Contenedor principal
+.layout-wrapper {
+  display: flex;
+  height: calc(100vh - 76px); // resto de la pantalla
+
+  // Menú lateral
+  .side-menu {
+    width: 230px;
+    background: #f2f4f8;
+    border-right: 1px solid #e5e7eb;
+    padding-top: 1rem;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        a {
+          display: block;
+          padding: .75rem 1rem;
+          text-decoration: none;
+          color: #374151;
+          font-weight: 500;
+          border-left: 4px solid transparent;
+          transition: background .2s, border-color .2s;
+
+          &:hover {
+            background: #e5e7eb;
+          }
+        }
+
+        &.active > a {
+          background: #e0e7ff;
+          border-color: #4f46e5;
+          color: #1e3a8a;
+        }
+      }
+    }
+  }
+
+  // Área de contenido
+  .content-area {
+    flex: 1 1 auto;
+    padding: 1.25rem;
+    overflow-y: auto;
+  }
+}

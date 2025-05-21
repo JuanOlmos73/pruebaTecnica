@@ -1,0 +1,39 @@
+<div *ngIf="showNotification" class="toast">{{ notificationMessage }}</div>
+
+<h2>Productos Activos</h2>
+
+<table class="tabla">
+  <thead>
+    <tr>
+    
+      <th>Nombre</th>
+      <th>Cantidad</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of productos">
+      <td>{{ p.nombreproducto }}</td>
+      <td>{{ p.cantidad }}</td>
+      <td>
+        <button (click)="abrirDialogo(p)">Salidas</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Diálogo -->
+<div class="dialog" *ngIf="dialogVisible">
+  <div class="dialog-content">
+    <h3>Salida de producto</h3>
+    <p><strong>{{ productoSeleccionado?.nombreproducto }}</strong></p>
+
+    <label>Cantidad a salir:</label>
+    <input type="number" [(ngModel)]="cantidadSalida" min="1" />
+
+    <div class="dialog-actions">
+      <button (click)="confirmarSalida()">Aceptar</button>
+      <button (click)="cancelarSalida()">Cancelar</button>
+    </div>
+  </div>
+</div>

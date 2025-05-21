@@ -1,0 +1,211 @@
+<section class="inventory-container">
+  <!-- Barra de herramientas simulada -->
+  <section class="toolbar" *ngIf="rol === 'ADMIN'">
+    <button class="btn primary" (click)="openAddDialog()">
+      <i class="icon"></i> Agregar Producto
+    </button>
+    <button class="btn primary" [disabled]="!selectedProduct  || !selectedProduct.estatus"  (click)="openIncreaseDialog(selectedProduct)">
+      <i class="icon"></i> Aumentar Inventario
+    </button>
+    <button class="btn danger" [disabled]="!selectedProduct" (click)="openToggleDialog(selectedProduct)">
+      {{ selectedProduct?.estatus ? 'Dar de Baja' : 'Reactivar' }}
+    </button>
+  </section>
+
+  <!-- Tabla de productos -->
+  <div class="table-container">
+    <table class="table" *ngIf="!loading; else loadingTpl">
+      <thead>
+        <tr>
+          <th width="40px"></th>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Estatus</th>
+          <th>Stock</th>
+          <th>Total Stock</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let producto of productos" 
+            (click)="selectedProduct = producto"
+            [class.selected]="producto === selectedProduct"
+            [class.inactive]="producto.estatus == false">
+          <td style="width: 22px;">
+            <input type="radio" [checked]="producto === selectedProduct" 
+                   (click)="$event.stopPropagation(); selectedProduct = producto"/>
+          </td>
+          <td>{{ producto.nombreproducto }}</td>
+          <td>{{ producto.precio | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td>
+            <span class="status-badge" [class.active]="producto.estatus === true">
+              {{ (producto.estatus ? 'ACTIVO' : 'INACTIVO') | lowercase }}
+            </span>
+          </td>
+          <td>{{ producto.cantidad || 0 }}</td>
+          <td>{{ producto.total || 0 }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Loading template -->
+  <ng-template #loadingTpl>
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando inventario...</p>
+    </div>
+  </ng-template>
+
+
+
+  <!-- 🔵 Dialog: Agregar Producto -->
+  <p-dialog header="Agregar Producto" [(visible)]="showAddDialog" [modal]="true" [closable]="false">
+    <div class="p-fluid">
+      <div class="p-field">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" pInputText [(ngModel)]="nuevoProducto.nombreproducto" required />
+      </div>
+
+      <div class="p-field">
+        <label for="precio">Precio</label>
+        <input id="precio" type="number" pInputNumber [(ngModel)]="nuevoProducto.precio" [min]="0" required />
+      </div>
+
+      <div class="p-field">
+        <label for="cantidad">Cantidad</label>
+        <input id="cantidad" type="number" pInputNumber [(ngModel)]="nuevoProducto.cantidad" [min]="0" />
+      </div>
+
+      <div class="p-field">
+        <label for="estatus">Estatus</label>
+        <p-dropdown
+          id="estatus"
+          [options]="estatusOptions"
+          [(ngModel)]="nuevoProducto.estatus"
+          placeholder="Seleccionar estatus"
+          optionLabel="label"
+          required
+        ></p-dropdown>
+      </div>
+    </div>
+
+    <p-footer>
+      <button type="button" pButton label="Agregar" (click)="agregarProducto()"></button>
+      <button type="button" pButton label="Salir" class="p-button-secondary" (click)="showAddDialog = false"></button>
+    </p-footer>
+  </p-dialog>
+<!-- Overlay general para el dialog -->
+<div *ngIf="showAddDialog" class="overlay">
+  <div class="dialog">
+    <h2>Agregar Producto</h2>
+    <form (ngSubmit)="agregarProducto()" #addForm="ngForm" novalidate>
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input
+          id="nombre"
+          name="nombre"
+          type="text"
+          [(ngModel)]="nuevoProducto.nombreproducto"
+          required
+          class="input-field"
+          #nombre="ngModel"
+        />
+        <div class="error" *ngIf="nombre.invalid && nombre.touched">
+          Nombre es requerido.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="precio">Precio</label>
+        <input
+          id="precio"
+          name="precio"
+          type="number"
+          [(ngModel)]="nuevoProducto.precio"
+          required
+          class="input-field"
+          #precio="ngModel"
+          min="0"
+          step="0.01"
+        />
+        <div class="error" *ngIf="precio.invalid && precio.touched">
+          Precio válido es requerido.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="cantidad">Cantidad</label>
+        <input
+          id="cantidad"
+          name="cantidad"
+          type="number"
+          [(ngModel)]="nuevoProducto.cantidad"
+          class="input-field"
+          min="0"
+          step="1"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="estatus">Estatus</label>
+        <select
+          id="estatus"
+          name="estatus"
+          [(ngModel)]="nuevoProducto.estatus"
+          required
+          class="input-field"
+        >
+          <option [ngValue]="true">Activo</option>
+          <option [ngValue]="false">Inactivo</option>
+        </select>
+      </div>
+
+      <div class="dialog-footer">
+        <button type="submit" [disabled]="addForm.invalid" class="btn btn-primary">
+          Agregar Producto
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="showAddDialog = false">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Diálogo Aumentar Inventario -->
+<div *ngIf="showIncreaseDialog" class="overlay">
+  <div class="dialog small-dialog">
+    <h3>Aumentar Inventario</h3>
+    <div class="form-group">
+      <label for="cantidadExtra">Cantidad a Agregar</label>
+      <input
+        id="cantidadExtra"
+        type="number"
+        [(ngModel)]="cantidadExtra"
+        min="1"
+        class="input-field"
+      />
+    </div>
+    <div class="dialog-footer">
+      <button class="btn btn-primary" (click)="aumentarInventario()">Aceptar</button>
+      <button class="btn btn-secondary" (click)="showIncreaseDialog = false">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Diálogo Confirmar Cambio de Estatus -->
+<div *ngIf="showToggleDialog" class="overlay">
+  <div class="dialog small-dialog">
+    <h3>Confirmación</h3>
+    <p>¿Está seguro que desea realizar esta acción?</p>
+    <div class="dialog-footer">
+      <button class="btn btn-primary" (click)="confirmarToggleStatus()">Aceptar</button>
+      <button class="btn btn-secondary" (click)="showToggleDialog = false">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast de notificación -->
+<div *ngIf="showNotification" class="toast">
+  {{ notificationMessage }}
+</div>

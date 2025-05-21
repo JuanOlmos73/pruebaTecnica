@@ -32,7 +32,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",  
+               "node_modules/primeflex/primeflex.css"
             ],
             "scripts": []
           },
@@ -62,6 +63,10 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "castoresPruebaTecnica:build:development",
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "castoresPruebaTecnica:build:production"
@@ -69,8 +74,10 @@
             "development": {
               "buildTarget": "castoresPruebaTecnica:build:development"
             }
+            
           },
           "defaultConfiguration": "development"
+          
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
@@ -98,5 +105,9 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
+  
 }

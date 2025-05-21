@@ -1,0 +1,34 @@
+<header class="topbar">
+  <div class="logo">Sistema Inventario</div>
+
+  <div class="spacer"></div>
+
+  <button class="logout-btn" (click)="logout()">
+    <span class="icon">&#x23FB;</span>
+    Cerrar sesión
+  </button>
+</header>
+
+<div class="layout-wrapper">
+  <!-- Menú lateral propio -->
+  <nav class="side-menu">
+    <ul>
+       <li *ngIf="rol === 'ADMIN'" routerLinkActive="active">
+        <a [routerLink]="['/inventario']">📦 Inventario</a>
+      </li>
+
+      <li *ngIf="rol === 'ALMACENISTA'" routerLinkActive="active">
+        <a [routerLink]="['/salida']">↘️ Salida</a>
+      </li>
+
+      <li *ngIf="rol === 'ADMIN'" routerLinkActive="active">
+        <a [routerLink]="['/historial']">📜 Historial</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Área de contenido -->
+  <main class="content-area">
+    <router-outlet></router-outlet>
+  </main>
+</div>

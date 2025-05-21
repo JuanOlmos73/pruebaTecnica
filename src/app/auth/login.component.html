@@ -1,0 +1,28 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Sistema de Inventario</h2>
+    <form class="login-form" (ngSubmit)="onSubmit()"  #loginForm="ngForm">
+      <label for="username">Usuario</label>
+      <input
+        id="username"
+        type="text"
+        [(ngModel)]="correo"
+        name="username"
+        placeholder="Ingrese su usuario"
+        required
+      />
+
+      <label for="password">Contraseña</label>
+      <input
+        id="password"
+        type="password"
+        [(ngModel)]="contrasena"
+        name="password"
+        placeholder="Ingrese su contraseña"
+        required
+      />
+
+      <button type="submit">Ingresar</button>
+    </form>
+  </div>
+</div>
