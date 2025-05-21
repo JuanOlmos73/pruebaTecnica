@@ -139,6 +139,34 @@ BEGIN
 END;
 $$;
 
+
+
+CREATE OR REPLACE FUNCTION Pkginventario.obtenerHistorico()
+RETURNS TABLE (
+    tipoMovimiento   VARCHAR(120),
+    nombreproducto   VARCHAR(120),
+    cantidad         NUMERIC(10,2),   -- ← mismo tipo que la columna
+    fecha			 TIMESTAMP,
+	usuario          VARCHAR(120),
+    detalle          TEXT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    
+SELECT  h.tipo,
+        p.nombre            AS nombre_producto,
+        h.cantidad,
+        h.fecha_hora,
+        u.nombre            AS nombre_usuario,
+        h.detalle
+FROM        historico  AS h
+INNER JOIN  producto    AS p  ON p.id_producto = h.id_producto   -- 1er JOIN
+INNER JOIN  usuario     AS u  ON u.id_usuario  = h.id_usuario    -- 2º JOIN
+ORDER BY h.fecha_hora DESC;
+END;
+$$;
 INSERT INTO dmlsInventario (
     nombre_paquete,
     nombre_procedimiento,
@@ -153,4 +181,20 @@ INSERT INTO dmlsInventario (
     '[]'::jsonb,
     'TABLE(id_producto INT, nombre_producto VARCHAR, ...)',
     'SELECT * FROM Pkginventario.obtenerProductos()'
+);
+
+INSERT INTO dmlsInventario (
+    nombre_paquete,
+    nombre_procedimiento,
+    descripcion,
+    parametros,
+    tipo_retorno,
+    script_ejecucion
+) VALUES (
+    'Pkginventario',
+    'obtenerHistorico',
+    'Obtiene Datos del Historico',
+    '[]'::jsonb,
+    'TABLE(nombreProducto VARCHAR, DETALLE TEXT, ...)',
+    'SELECT * FROM Pkginventario.obtenerHistorico()'
 );
