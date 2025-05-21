@@ -78,3 +78,5 @@ Puedes registrar usuarios en la base de datos manualmente.
 🧑‍💻 Autor
 Desarrollado por [Juan Luis Olmos Silva]
 ✉️ Contacto: [olmos.silva18@gmail.com]
+
+Nota:la app o la parte del front esta en la rama master
